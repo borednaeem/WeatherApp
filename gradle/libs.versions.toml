@@ -9,6 +9,7 @@ appcompat = "1.6.1"
 material = "1.10.0"
 retrofit = "2.9.0"
 okhttpLogging = "4.11.0"
+parcelize = "1.9.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -26,6 +27,7 @@ retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", v
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
+org-jetbrains-kotlin-plugin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "org-jetbrains-kotlin-android" }
 
 [bundles]
 
