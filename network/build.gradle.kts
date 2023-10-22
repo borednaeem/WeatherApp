@@ -1,3 +1,5 @@
+import java.util.*
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.com.android.library)
@@ -7,6 +9,7 @@ plugins {
 android {
     namespace = "com.example.weatherapp.network"
     compileSdk = 34
+    buildFeatures.buildConfig = true
 
     defaultConfig {
         minSdk = 24
@@ -15,13 +18,27 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    val properties = Properties().apply {
+        load(rootProject.file("local.properties").reader())
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            val weatherApiKey = properties["WEATHER_API_KEY_RELEASE"] as String
+            buildConfigField("String", "WEATHER_API_KEY", weatherApiKey)
+        }
+
+        debug {
+            isMinifyEnabled = false
+
+            val weatherApiKey = properties["WEATHER_API_KEY_DEBUG"] as String
+            buildConfigField("String", "WEATHER_API_KEY", weatherApiKey)
         }
     }
     compileOptions {
