@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "WeatherApp"
 include(":app")
 include(":network")
+include(":core:ui-commons")
