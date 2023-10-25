@@ -1,23 +1,18 @@
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    alias(libs.plugins.com.android.application)
+    alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    kotlin("kapt")
-    alias(libs.plugins.com.google.dagger.hilt.android)
 }
 
 android {
-    namespace = "com.example.weatherapp"
+    namespace = "com.example.weatherapp.core.ui_commons"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.weatherapp"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -36,21 +31,26 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
 }
 
 dependencies {
-    implementation(project(":core:ui-commons"))
-
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
 
-    implementation(libs.jankstats)
-
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation(platform(libs.androidx.compose.bom))
+    api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.foundation)
+    api(libs.androidx.compose.foundation.layout)
+    api(libs.androidx.compose.runtime)
+    api(libs.androidx.compose.ui.tooling.preview)
+    api(libs.androidx.core.ktx)
+    api(libs.coil.kt.compose)
 }
