@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class SearchDto(
+data class CitySearchDto(
     @field:SerializedName("country")
     val country: String? = null,
 
