@@ -1,6 +1,6 @@
 package com.example.weatherapp.network
 
-import com.example.weatherapp.network.model.SearchDto
+import com.example.weatherapp.network.model.CitySearchDto
 import com.example.weatherapp.network.model.WeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,5 +16,5 @@ interface WeatherApiInterface {
     @GET(ApiConstants.ENDPOINT_CITY_AUTOCOMPLETE)
     suspend fun citySearch(
         @Query(ApiConstants.PARAM_QUERY) query: String,
-    ): List<SearchDto>
+    ): List<CitySearchDto>
 }
