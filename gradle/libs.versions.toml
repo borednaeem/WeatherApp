@@ -22,6 +22,9 @@ hilt = "2.48.1"
 composeActivity = "1.8.0"
 composeViewModel = "2.6.2"
 composeLiveData = "1.5.4"
+systemuicontroller = "0.32.0"
+composeConstraintLayout = "1.0.1"
+javaVersion = "17"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -53,11 +56,16 @@ androidx-compose-activity = { group = "androidx.activity", name = "activity-comp
 androidx-compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "composeViewModel" }
 androidx-compose-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "composeLiveData" }
 
+androidx-compose-constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "composeConstraintLayout"}
+
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 
 coil-kt = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+
+accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "systemuicontroller" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
