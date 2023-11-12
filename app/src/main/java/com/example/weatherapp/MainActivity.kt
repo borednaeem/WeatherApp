@@ -11,4 +11,17 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var jankStates: dagger.Lazy<JankStats>
+
+    override fun onResume() {
+        super.onResume()
+        jankStates.get().isTrackingEnabled = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        jankStates.get().isTrackingEnabled = false
+    }
 }
