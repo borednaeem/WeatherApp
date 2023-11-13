@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SwensonheTask</string>
+
+    <string name="content_description_temp_image">Temperature image</string>
+    <string name="content_description_arrow_up">Arrow up</string>
+    <string name="content_description_search">Search</string>
+
+    <string name="high_low_temp">%1$s°/%2$s°F</string>
+    <string name="search_hint">Search City</string>
+    <string name="error_message">An error occurred</string>
+    <string name="retry">Retry</string>
+    <string name="no_results">No Results</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="today">Today</string>
+    <string name="humidity_percentage">%1$d%%</string>
+    <string name="wind_speed_mph">%1$.2f mph</string>
+    <string name="Fahrenheit">°F</string>
+    <string name="content_description_clear_search">Clear search</string>
+</resources>
