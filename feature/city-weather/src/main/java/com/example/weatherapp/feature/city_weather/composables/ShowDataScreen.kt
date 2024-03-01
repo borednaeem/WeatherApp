@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -21,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -31,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,60 +49,30 @@ import com.example.weatherapp.core.domain_data.model.DayWeatherSummary
 @Composable
 fun ShowDataScreen(
     cityWeather: CityWeather,
-    onSearchClicked: () -> Unit,
-    onSearchResultClicked: (City) -> Unit,
-    onSearchTextChanged: (String) -> Unit,
-    onExitSearchClicked: () -> Unit,
-    searchShown: Boolean,
-    searchResults: List<City>,
-    onSearchClearClicked: () -> Unit,
 ) {
     WeatherDataWidgets(
         cityWeather = cityWeather,
-        onSearchClicked = onSearchClicked,
-        onSearchResultClicked = onSearchResultClicked,
-        onSearchTextChanged = onSearchTextChanged,
-        onExitSearchClicked = onExitSearchClicked,
-        searchShown = searchShown,
-        searchResults = searchResults,
-        onSearchClearClicked = onSearchClearClicked
     )
 }
 
 @Composable
 fun WeatherDataWidgets(
     cityWeather: CityWeather,
-    searchShown: Boolean = false,
-    onSearchClicked: () -> Unit = {},
-    onSearchResultClicked: (City) -> Unit = {},
-    onSearchTextChanged: (String) -> Unit = {},
-    onExitSearchClicked: () -> Unit = {},
-    searchResults: List<City> = listOf(),
-    onSearchClearClicked: () -> Unit = {},
 ) {
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
-        val (toolbarSection, cityAndDateSection, temperatureInfoSection, daySummarySection) = createRefs()
+        val (cityAndDateSection, temperatureInfoSection, daySummarySection) = createRefs()
 
-        val toolbarSectionTopGuideline = createGuidelineFromTop(0.0f)
-        val toolbarSectionBottomGuideline = createGuidelineFromTop(
-            when {
-                searchResults.isNotEmpty() -> 0.45f
-                searchShown -> 0.15f
-                else -> 0.15f
-            }
-        )
+        val cityAndDateSectionTopGuideline = createGuidelineFromTop(0.15f)
+        val cityAndDateSectionBottomGuideline = createGuidelineFromTop(0.30f)
 
-        val cityAndDateSectionTopGuideline = createGuidelineFromTop(0.20f)
-        val cityAndDateSectionBottomGuideline = createGuidelineFromTop(0.32f)
+        val temperatureInfoSectionTopGuideline = createGuidelineFromTop(0.31f)
+        val temperatureInfoSectionBottomGuideline = createGuidelineFromTop(0.60f)
 
-        val temperatureInfoSectionTopGuideline = createGuidelineFromTop(0.37f)
-        val temperatureInfoSectionBottomGuideline = createGuidelineFromTop(0.75f)
-
-        val daySummarySectionTopGuideline = createGuidelineFromTop(0.80f)
-        val daySummarySectionBottomGuideline = createGuidelineFromTop(0.95f)
+        val daySummarySectionTopGuideline = createGuidelineFromTop(0.65f)
+        val daySummarySectionBottomGuideline = createGuidelineFromTop(0.90f)
 
         CityAndDateSection(
             modifier = Modifier
@@ -142,57 +111,73 @@ fun WeatherDataWidgets(
                 },
             daySummaryItems = cityWeather.summaryItems
         )
-
-        ToolbarSection(
-            modifier = Modifier
-                .constrainAs(toolbarSection) {
-                    top.linkTo(toolbarSectionTopGuideline)
-                    bottom.linkTo(toolbarSectionBottomGuideline)
-                    height = Dimension.fillToConstraints
-                },
-            onSearchClicked = onSearchClicked,
-            onSearchResultClicked = onSearchResultClicked,
-            onSearchTextChanged = onSearchTextChanged,
-            onExitSearchClicked = onExitSearchClicked,
-            searchShown = searchShown,
-            searchResults = searchResults,
-            time = cityWeather.time,
-            onSearchClearClicked = onSearchClearClicked
-        )
     }
 }
 
 @Composable
 fun DaySummarySection(modifier: Modifier, daySummaryItems: List<DayWeatherSummary>) {
-    LazyRow(
+    LazyColumn(
         modifier = modifier
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         items(daySummaryItems.size) { index ->
             val itemData = daySummaryItems[index]
             DaySummaryItem(
-                itemData
+                itemData,
+                modifier = Modifier
+                    .background(
+                        if (index % 2 == 0) {
+                            Color.Transparent
+                        } else {
+                            Color(0x61000000)
+                        }
+                    )
+                    .padding(horizontal = 24.dp, vertical = 4.dp)
             )
         }
     }
 }
 
 @Composable
-fun DaySummaryItem(item: DayWeatherSummary) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+fun DaySummaryItem(
+    item: DayWeatherSummary,
+    modifier: Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(modifier),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(item.weatherImage)
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(R.drawable.sun),
-            contentDescription = stringResource(id = R.string.content_description_temp_image),
-            modifier = Modifier.size(40.dp)
-        )
-        ExtraSmallSpace()
+        Row(
+            modifier = Modifier.fillMaxWidth(0.4f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = when {
+                    item.isToday -> stringResource(id = R.string.today)
+                    item.isTomorrow -> stringResource(id = R.string.tomorrow)
+                    else -> item.dayName
+                },
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = Color.White
+            )
+            MediumSpace()
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.weatherImage)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.sun),
+                contentDescription = stringResource(id = R.string.content_description_temp_image),
+                modifier = Modifier.size(40.dp)
+            )
+        }
         Text(
             text = stringResource(
                 R.string.high_low_temp,
@@ -200,18 +185,9 @@ fun DaySummaryItem(item: DayWeatherSummary) {
                 item.lowTempInFahrenheit
             ),
             style = MaterialTheme.typography.bodySmall,
-            color = Color.White
-        )
-        Text(
-            text = when {
-                item.isToday -> stringResource(id = R.string.today)
-                item.isTomorrow -> stringResource(id = R.string.tomorrow)
-                else -> item.dayName
-            },
-            style = MaterialTheme.typography.bodySmall.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            color = Color.White
+            color = Color.White,
+            modifier = Modifier.fillMaxWidth(0.6f),
+            textAlign = TextAlign.End
         )
     }
 }
@@ -360,6 +336,7 @@ fun CityAndDateSection(modifier: Modifier, cityName: String, todayDate: String) 
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+        MediumSpace()
         Text(
             text = todayDate,
             style = MaterialTheme.typography.bodyLarge,
@@ -375,32 +352,6 @@ fun CityAndDateSectionPreview() {
         cityName = "San Francisco",
         todayDate = "Saturday, 20 Aug 2022"
     )
-}
-
-@Composable
-fun ToolbarSection(
-    modifier: Modifier,
-    time: String,
-    onSearchClicked: () -> Unit,
-    onSearchResultClicked: (City) -> Unit,
-    onSearchTextChanged: (String) -> Unit,
-    onExitSearchClicked: () -> Unit,
-    searchShown: Boolean,
-    searchResults: List<City>,
-    onSearchClearClicked: () -> Unit,
-) {
-    if (searchShown) {
-        SearchInputSection(
-            modifier,
-            onSearchResultClicked,
-            onSearchTextChanged,
-            onExitSearchClicked,
-            searchResults,
-            onSearchClicked
-        )
-    } else {
-        DateAndSearchIconSection(modifier, time, onSearchClicked)
-    }
 }
 
 @Composable
@@ -478,7 +429,6 @@ fun SearchBackButton(onExitSearchClicked: () -> Unit) {
         Icon(
             Icons.Filled.ArrowBack,
             contentDescription = stringResource(id = R.string.content_description_search),
-            //tint = appBlue
         )
     }
 }
@@ -499,7 +449,6 @@ fun SearchCityTextInput(
                 ),
                 width = 1.dp,
                 color = Color.Blue
-                //color = appBlue
             )
             .background(Color.White),
         colors = TextFieldDefaults.textFieldColors(
@@ -513,13 +462,10 @@ fun SearchCityTextInput(
             text.value = newText
             onSearchTextChanged(text.value)
         },
-        textStyle = MaterialTheme.typography.bodyLarge.copy(
-            //color = appBlue
-        ),
+        textStyle = MaterialTheme.typography.bodyLarge,
         placeholder = {
             Text(
                 text = stringResource(id = R.string.search_hint),
-                //color = lighterAppBlue
             )
         },
         singleLine = true,
@@ -535,7 +481,6 @@ fun SearchCityTextInput(
                     Icon(
                         Icons.Default.Clear,
                         contentDescription = stringResource(id = R.string.content_description_clear_search),
-                        //tint = appBlue
                     )
                 }
             }
@@ -571,13 +516,11 @@ fun SearchResultList(
                     text = cityResult.name,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        //color = appBlue,
                     )
                 )
                 Text(
                     text = " - ${cityResult.region}",
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        //color = appBlue,
                     )
                 )
             }

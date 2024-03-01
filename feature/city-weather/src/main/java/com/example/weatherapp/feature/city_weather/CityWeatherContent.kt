@@ -8,26 +8,20 @@ import com.example.swensonhetask.ui.screens.cityweather.composables.*
 import com.example.weatherapp.core.ui_commons.BackgroundColorOverlay
 import com.example.weatherapp.core.ui_commons.BackgroundImage
 import com.example.weatherapp.feature.city_weather.composables.ShowDataScreen
-import com.example.weatherapp.core.domain_data.model.City
 import com.example.weatherapp.core.ui_commons.LoadingScreen
 
 
 @Composable
 fun CityWeatherContent(
     screenState: CityWeatherScreenState,
-    onSearchClicked: () -> Unit,
-    onSearchResultClicked: (City) -> Unit,
-    onSearchTextChanged: (String) -> Unit,
-    onExitSearchClicked: () -> Unit,
-    onRetryButtonClick: () -> Unit,
-    onSearchClearClicked: () -> Unit,
+    onSearchClicked: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         BackgroundImage()
         BackgroundColorOverlay()
         CityWeatherContentViews(
-            screenState, onSearchClicked, onSearchResultClicked,
-            onSearchTextChanged, onExitSearchClicked, onRetryButtonClick, onSearchClearClicked
+            screenState = screenState,
+            onRetryButtonClick = onSearchClicked
         )
     }
 }
@@ -35,12 +29,7 @@ fun CityWeatherContent(
 @Composable
 fun CityWeatherContentViews(
     screenState: CityWeatherScreenState,
-    onSearchClicked: () -> Unit,
-    onSearchResultClicked: (City) -> Unit,
-    onSearchTextChanged: (String) -> Unit,
-    onExitSearchClicked: () -> Unit,
     onRetryButtonClick: () -> Unit,
-    onSearchClearClicked: () -> Unit,
 ) {
     when (screenState) {
         is CityWeatherScreenState.Error -> {
@@ -54,14 +43,7 @@ fun CityWeatherContentViews(
 
         is CityWeatherScreenState.ShowData -> {
             ShowDataScreen(
-                cityWeather = screenState.cityWeather,
-                onSearchClicked = onSearchClicked,
-                onSearchResultClicked = onSearchResultClicked,
-                onSearchTextChanged = onSearchTextChanged,
-                onExitSearchClicked = onExitSearchClicked,
-                searchResults = screenState.searchResults,
-                searchShown = screenState.searchShown,
-                onSearchClearClicked = onSearchClearClicked
+                cityWeather = screenState.cityWeather
             )
         }
     }

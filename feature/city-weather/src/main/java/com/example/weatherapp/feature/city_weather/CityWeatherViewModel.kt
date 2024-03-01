@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.core.domain_data.Constants
 import com.example.weatherapp.core.domain.usecase.getweather.IGetWeatherUseCase
 import com.example.weatherapp.core.domain.usecase.searchcity.ISearchCityUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -14,8 +15,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
-class CityWeatherViewModel(
+@HiltViewModel
+class CityWeatherViewModel @Inject constructor(
     private val searchCityUseCase: ISearchCityUseCase,
     private val getWeatherUseCase: IGetWeatherUseCase,
 ) : ViewModel() {
@@ -88,10 +91,6 @@ class CityWeatherViewModel(
         emit(searchResults)
     }
 
-    fun onExitSearchClicked() {
-        _screenState.value = CityWeatherScreenState.ShowData(currentCityWeather)
-    }
-
     private fun loadWeatherData(cityName: String, ignoreError: Boolean = false) {
         stopUpdates()
         viewModelScope.launch {
@@ -132,27 +131,6 @@ class CityWeatherViewModel(
     }
 
     fun onSearchClicked() {
-        searchResults = listOf()
-        _screenState.value = CityWeatherScreenState.ShowData(
-            currentCityWeather,
-            true,
-            currentQuery,
-            searchResults
-        )
-    }
-
-    fun onSearchResultClicked(city: com.example.weatherapp.core.domain_data.model.City) {
-        _screenState.value = CityWeatherScreenState.Loading
-        loadWeatherData(city.name)
-    }
-
-    fun onRetryClicked() {
-        val errorState = _screenState.value as? CityWeatherScreenState.Error?
-        errorState?.onRetryClick?.run()
-    }
-
-    fun onSearchCleared() {
-        currentQuery = ""
         searchResults = listOf()
         _screenState.value = CityWeatherScreenState.ShowData(
             currentCityWeather,
