@@ -39,12 +39,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.weatherapp.core.domain_data.model.CityWeather
 import com.example.weatherapp.core.ui_commons.R
 import com.example.weatherapp.core.ui_commons.ExtraSmallSpace
 import com.example.weatherapp.core.ui_commons.LargeSpace
 import com.example.weatherapp.core.ui_commons.MediumSpace
 import com.example.weatherapp.core.domain_data.model.City
+import com.example.weatherapp.core.domain_data.model.CityWeather
+import com.example.weatherapp.core.domain_data.model.DayWeatherSummary
 
 @Composable
 fun ShowDataScreen(
@@ -162,7 +163,7 @@ fun WeatherDataWidgets(
 }
 
 @Composable
-fun DaySummarySection(modifier: Modifier, daySummaryItems: List<com.example.weatherapp.core.domain_data.model.DayWeatherSummary>) {
+fun DaySummarySection(modifier: Modifier, daySummaryItems: List<DayWeatherSummary>) {
     LazyRow(
         modifier = modifier
             .fillMaxWidth(),
@@ -178,7 +179,7 @@ fun DaySummarySection(modifier: Modifier, daySummaryItems: List<com.example.weat
 }
 
 @Composable
-fun DaySummaryItem(item: com.example.weatherapp.core.domain_data.model.DayWeatherSummary) {
+fun DaySummaryItem(item: DayWeatherSummary) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -221,21 +222,21 @@ fun DaySummarySectionPreview() {
     DaySummarySection(
         modifier = Modifier,
         daySummaryItems = listOf(
-            com.example.weatherapp.core.domain_data.model.DayWeatherSummary(
+            DayWeatherSummary(
                 weatherImage = "",
                 highTempInFahrenheit = 88f,
                 lowTempInFahrenheit = 80f,
                 dayName = "Today"
             ),
 
-            com.example.weatherapp.core.domain_data.model.DayWeatherSummary(
+            DayWeatherSummary(
                 weatherImage = "",
                 highTempInFahrenheit = 88f,
                 lowTempInFahrenheit = 80f,
                 dayName = "Today"
             ),
 
-            com.example.weatherapp.core.domain_data.model.DayWeatherSummary(
+            DayWeatherSummary(
                 weatherImage = "",
                 highTempInFahrenheit = 88f,
                 lowTempInFahrenheit = 80f,
