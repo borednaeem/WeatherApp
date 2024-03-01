@@ -4,5 +4,5 @@ import com.example.weatherapp.core.domain_data.model.City
 
 
 interface ISearchCityUseCase {
-    suspend fun invoke(query: String): List<com.example.weatherapp.core.domain_data.model.City>
+    suspend fun invoke(query: String): List<City>
 }
