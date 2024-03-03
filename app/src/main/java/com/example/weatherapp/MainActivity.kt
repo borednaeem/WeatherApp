@@ -15,6 +15,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var jankStates: dagger.Lazy<JankStats>
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
+    }
+
     override fun onResume() {
         super.onResume()
         jankStates.get().isTrackingEnabled = true
