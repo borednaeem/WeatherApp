@@ -4,7 +4,7 @@ import com.example.weatherapp.core.domain_data.model.CityWeather
 
 
 interface IGetWeatherUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         cityName: String
     ): CityWeather
 }
