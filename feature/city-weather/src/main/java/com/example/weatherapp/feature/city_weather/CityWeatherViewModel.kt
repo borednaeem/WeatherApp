@@ -1,5 +1,7 @@
 package com.example.weatherapp.feature.city_weather
 
+import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,6 +11,9 @@ import com.example.weatherapp.core.domain.usecase.getweather.IGetWeatherUseCase
 import com.example.weatherapp.core.domain.usecase.searchcity.ISearchCityUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
@@ -24,8 +29,8 @@ class CityWeatherViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _screenState =
-        mutableStateOf<CityWeatherScreenState>(CityWeatherScreenState.Loading)
-    val screenState: State<CityWeatherScreenState>
+        MutableStateFlow<CityWeatherScreenState>(CityWeatherScreenState.Loading)
+    val screenState: StateFlow<CityWeatherScreenState>
         get() = _screenState
 
     private var updateTimer: Timer? = null
@@ -33,10 +38,6 @@ class CityWeatherViewModel @Inject constructor(
     private var currentCityWeather = com.example.weatherapp.core.domain_data.model.CityWeather()
     private var currentQuery = ""
     private var searchResults: List<com.example.weatherapp.core.domain_data.model.City> = listOf()
-
-    init {
-        loadDefaultCityWeather()
-    }
 
     private fun startUpdates() {
         updateTimer = Timer()
@@ -58,7 +59,7 @@ class CityWeatherViewModel @Inject constructor(
         updateTimer = null
     }
 
-    private fun loadDefaultCityWeather() {
+    fun loadDefaultCityWeather() {
         loadWeatherData(Constants.defaultCityName)
     }
 
@@ -91,33 +92,19 @@ class CityWeatherViewModel @Inject constructor(
         emit(searchResults)
     }
 
-    private fun loadWeatherData(cityName: String, ignoreError: Boolean = false) {
-        stopUpdates()
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun loadWeatherData(cityName: String, ignoreError: Boolean = false) {
         viewModelScope.launch {
-            weatherDataFlow(cityName)
-                .flowOn(Dispatchers.IO)
-                .catch {
-                    if (!ignoreError) {
-                        showError {
-                            loadWeatherData(cityName)
-                        }
-                    }
+            try {
+                _screenState.value = CityWeatherScreenState.Loading
+                val weatherData = getWeatherUseCase(cityName)
+                _screenState.value = CityWeatherScreenState.ShowData(weatherData)
+            } catch (e: Exception) {
+                Log.e(TAG, e.message ?: "")
+                _screenState.value = CityWeatherScreenState.Error {
+                    loadWeatherData(cityName, ignoreError)
                 }
-                .collectLatest {
-                    val prevState = _screenState.value
-                    if (prevState is CityWeatherScreenState.ShowData) {
-                        _screenState.value = CityWeatherScreenState.ShowData(
-                            it,
-                            searchShown = prevState.searchShown,
-                            searchResults = prevState.searchResults,
-                            query = prevState.query
-                        )
-                    } else {
-                        _screenState.value = CityWeatherScreenState.ShowData(it)
-                    }
-                    currentCityWeather = it
-                    startUpdates()
-                }
+            }
         }
     }
 
@@ -133,5 +120,9 @@ class CityWeatherViewModel @Inject constructor(
             currentQuery,
             searchResults
         )
+    }
+
+    companion object {
+        private const val TAG = "CityWeatherViewModel"
     }
 }

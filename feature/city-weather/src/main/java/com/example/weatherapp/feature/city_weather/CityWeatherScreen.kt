@@ -1,12 +1,20 @@
 package com.example.weatherapp.feature.city_weather
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun CityWeatherScreen(viewModel: CityWeatherViewModel) {
-    val screenState = viewModel.screenState
+    val screenState by viewModel.screenState.collectAsState()
+
+    LaunchedEffect(key1 = null, block = {
+        viewModel.loadDefaultCityWeather()
+    })
+
     CityWeatherContent(
-        screenState.value,
+        screenState,
         onSearchClicked = {
             viewModel.onSearchClicked()
         }
