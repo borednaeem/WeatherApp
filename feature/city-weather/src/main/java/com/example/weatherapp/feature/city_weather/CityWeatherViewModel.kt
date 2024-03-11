@@ -125,11 +125,6 @@ class CityWeatherViewModel @Inject constructor(
         _screenState.value = CityWeatherScreenState.Error(runnable)
     }
 
-    private fun weatherDataFlow(cityName: String) = flow {
-        val weatherData = getWeatherUseCase.invoke(cityName)
-        emit(weatherData)
-    }
-
     fun onSearchClicked() {
         searchResults = listOf()
         _screenState.value = CityWeatherScreenState.ShowData(
