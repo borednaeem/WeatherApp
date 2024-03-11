@@ -2,6 +2,8 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    kotlin("kapt")
+    alias(libs.plugins.com.google.dagger.hilt.android)
 }
 
 android {
@@ -63,4 +65,7 @@ dependencies {
     implementation(libs.androidx.compose.activity)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.constraint.layout)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 }
