@@ -10,16 +10,6 @@ android {
     namespace = "com.example.weatherapp.feature.city_weather"
     compileSdk = 34
 
-    defaultConfig {
-        applicationId = "com.example.weatherapp.feature.city_weather"
-        minSdk = 24
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
